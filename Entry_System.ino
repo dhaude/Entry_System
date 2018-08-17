@@ -1,7 +1,8 @@
-/*started on 11DEC2017 - uploaded on 06.01.2018 by Dieter
- * Version 3: self control of Display Backlight and time for backlight on
- * last changes on 17.08.2018
+/* started on 11DEC2017 - uploaded on 06.01.2018 by Dieter
+ * last changes on 17.08.2018 by Dieter Haude
+ * changed: added watchdog
  */
+#define Version "3.1"
 
 #include <Wiegand.h>
 #include <TaskScheduler.h>
@@ -60,20 +61,20 @@ Scheduler runner;
 LiquidCrystal_I2C lcd(0x27,16,2);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 // VARIABLES
-byte ahis = 0;      // door status history value ****
-byte bhis = 1;      // manuell door open signal von SIEDLE
-byte rhis = 1;      // ring signal von SIEDLE - added by Dieter Haude on 24.05.2018
-byte SEC_OPEN = 1;   // number of seconds to hold door open after valid UID
+byte ahis = 0;       // door status history value ****
+byte bhis = 1;       // manuell door open signal von SIEDLE
+byte rhis = 1;       // ring signal von SIEDLE - added by Dieter Haude on 24.05.2018
+byte SEC_OPEN =1;    // number of seconds to hold door open after valid UID
 
-int bufferCount;   // Anzahl der eingelesenen Zeichen
+int bufferCount;     // Anzahl der eingelesenen Zeichen
 
 void setup() {
   Serial.begin(115200);
 
-  wg.begin();         // start Wiegand Bus Control
-  inStr.reserve(17);  // reserve for instr serial input
+  wg.begin();        // start Wiegand Bus Control
+  inStr.reserve(17); // reserve for instr serial input
 
-  Wire.begin();       // I2C
+  Wire.begin();      // I2C
   lcd.init();        // initialize the LCD
 
   pinMode(LED_BUILTIN, OUTPUT);
@@ -111,8 +112,8 @@ void setup() {
   lcd.print("Hello");
   delay(500); 
   wdt_enable(WDTO_2S);  // Set up Watchdog Timer 2 seconds - added by Dieter Haude on 17.08.2018  
-  tRFR.enable();  // start cyclic readout of reader
-  tDSt.enable();  // start cyclic readout of door status
+  tRFR.enable();        // start cyclic readout of reader
+  tDSt.enable();        // start cyclic readout of door status
   lcd.clear();
   lcd.noBacklight();
 }
@@ -127,7 +128,7 @@ void tRFRCallback() {
   if (wg.available() && wg.getCode() > 5)  {                // check for data on Wiegand Bus
    Serial.println((String)"card;" + wg.getCode());    
     wg.delCode();                                           // 
-  }  
+  }
  }
 
 void tDStCallback() {
