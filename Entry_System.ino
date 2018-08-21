@@ -1,8 +1,9 @@
 /* started on 11DEC2017 - uploaded on 06.01.2018 by Dieter
  * last changes on 17.08.2018 by Dieter Haude
- * changed: added watchdog
+ * changed: added watchdog, test request
  */
-#define Version "3.1"
+
+#define Version "3.2"
 
 #include <Wiegand.h>
 #include <TaskScheduler.h>
